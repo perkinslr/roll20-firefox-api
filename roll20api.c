@@ -21,7 +21,6 @@ int startAPI(){
 			Py_DECREF(pFunc);
 		}
 	}
-	
 	PyRun_SimpleString("import os,sys;sys.path.extend(os.environ.get('PYTHON_PATH','').split(':'))\n");
 	pModule=PyImport_ImportModule("roll20API");
 	if (pModule){

@@ -1,0 +1,131 @@
+4c4
+< 
+---
+> # Modified version!!!
+6a7,8
+> 
+> 
+10a13,19
+> from math import *
+> Globals={}
+> import __builtin__
+> 
+> import Queue
+> CallStack=Queue.LifoQueue()
+> 
+17,18c26,27
+< _quote, _if, _set, _define, _lambda, _begin, _definemacro, = map(Sym, 
+< "quote   if   set!  define   lambda   begin   define-macro".split())
+---
+> _quote, _if, _s_eq, _set, _define, _lambda, _begin, _definemacro, = map(Sym, 
+> "quote   if   =      set!  define   lambda   begin   define-macro".split())
+112c121
+<         try:
+---
+>           try:
+115c124
+<             if x is eof_object: return
+---
+>             if x is eof_object: sys.stderr.write('\n');return
+118c127
+<         except Exception as e:
+---
+>           except Exception as e:
+123a133
+>     trusted=False
+138c148,159
+<         elif self.outer is None: raise LookupError(var)
+---
+>         elif self.outer is None:
+>           if var.startswith('$'):
+>             if Globals and var[1:] in Globals:
+>               t=Env()
+>               t.update(Globals)
+>               t[var]=t[var[1:]]
+>               return t
+>             print var
+>           if var in Builtin:
+>               return Builtin
+>               
+>           raise LookupError(var)
+140a162,163
+> 
+> 
+159a183,184
+>      'type':type,
+>      '**':op.pow,
+163c188,190
+<      'car':lambda x:x[0], 'cdr':lambda x:x[1:], 'append':op.add,  
+---
+>      'car':lambda x:x[0],
+>      'cdr':lambda x:x[1:], 
+>      'append':op.add,  
+182a210,225
+>   try:
+>     CallStack.put(x)
+>     CallStack.Print=True
+>     ret=Eval(x,env)
+>     CallStack.get()
+>     return ret
+>   except Exception as e:
+>     if CallStack.Print:
+>       print CallStack.queue
+>     CallStack.Print=False
+>     CallStack.get()
+>     import traceback
+>     traceback.print_exc()
+>     raise e
+>     
+> def Eval(x, env=global_env):
+184a228,230
+>         if Globals.get('Debug'):
+>             print x
+>             
+185a232,238
+>             if '.' in x and trusted:
+>                 l=x.split('.')
+>                 v=env.find(l[0])
+>                 v=v[l[0]]
+>                 for i in l[1:]:
+>                     v=getattr(v,i)
+>                 return v
+195c248
+<         elif x[0] is _set:       # (set! var exp)
+---
+>         elif x[0] == _set or x[0]=='=':       # (set! var exp)
+200a254,270
+>             if '.' in var:
+>                 l=var.split('.')
+>                 ret = eval(exp, env)
+>                 if var.startswith('$'):
+>                     o=Globals[l[0]]
+>                 else:
+>                     o=env[l[0]]
+>                 for i in l[1:-1]:
+>                     o=getattr(o,i)
+>                 setattr(o,l[-1],ret)
+>                 return None
+>             if var.startswith('$'):
+>               envb=env
+>               env=Globals
+>               env[var[1:]] = eval(exp, envb)
+>               env=envb
+>               return None
+218d287
+< 
+230c299
+<         if len(x)==3: x = x + [None]     # (if t c) => (if t c None)
+---
+>         if len(x)==3: x = x.append(None)     # (if t c) => (if t c None)
+304a374,377
+> Builtin=Env()
+> #Builtin.update(vars(__builtin__))
+> 
+> 
+309c382
+<        (if (= (length args) 1) (car args)
+---
+>        (if (== (length args) 1) (car args)
+317a391,392
+> 
+> 
