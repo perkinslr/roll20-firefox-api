@@ -1,4 +1,4 @@
-roll20api.xpi: install.rdf chrome.manifest content/browserOverlay.xul content/roll20api.js content/en-US/browserOverlay.dtd skin/browserOverlay.css
+roll20api.xpi: install.rdf chrome.manifest content/browserOverlay.xul content/roll20api.js locale/en-US/browserOverlay.dtd skin/browserOverlay.css
 	zip roll20api.xpi install.rdf chrome.manifest content/browserOverlay.xul content/roll20api.js content/en-US/browserOverlay.dtd skin/browserOverlay.css
 
 roll20api.so: roll20api.c
