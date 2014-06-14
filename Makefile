@@ -4,7 +4,7 @@ roll20api.xpi: install.rdf chrome.manifest content/browserOverlay.xul content/ro
 	zip roll20api.xpi install.rdf chrome.manifest content/browserOverlay.xul content/roll20api.js locale/en-US/browserOverlay.dtd skin/browserOverlay.css
 
 roll20api.so: roll20api.c
-	gcc -shared -fPIC -o roll20api.so roll20api.c `python-config --cflags` `python-config --ldflags` -g3
+	gcc -shared -fPIC -o roll20api.so roll20api.c `python-config --cflags` `python-config --ldflags` -g3 -DUSE_CALLCC_MODULE continue.o
 
 lis.py:
 	wget -O lis.py http://norvig.com/lispy.py

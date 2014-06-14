@@ -9,9 +9,13 @@ typedef int (*outputCallback)(char*);
 outputCallback sendMsgToR20;
 
 
+
+
 int startAPI(){
 	if (!initted){
 		Py_Initialize();
+		PyEval_InitThreads();
+		PyEval_ReleaseLock();
 	}
 	else{
 		if (pModule){
@@ -21,7 +25,7 @@ int startAPI(){
 			Py_DECREF(pFunc);
 		}
 	}
-	PyRun_SimpleString("import os,sys;sys.path.extend(os.environ.get('PYTHON_PATH','').split(':'))\n");
+	PyRun_SimpleString("import os,sys;sys.path.extend(os.environ.get('PYTHON_PATH','').split(':'));sys.path.append('.');import callcc;callcc.make_root()\n");
 	pModule=PyImport_ImportModule("roll20API");
 	if (pModule){
 		pFunc=PyObject_GetAttrString(pModule, "processInput");
@@ -62,4 +66,13 @@ int sendToOutputCallback(char *msg){
 		return sendMsgToR20(msg);
 	}
 	return -2;
+}
+
+
+int lockThread(){
+	return PyGILState_Ensure();
+}
+
+void unlockThread(int gillock){
+	PyGILState_Release(gillock);
 }
