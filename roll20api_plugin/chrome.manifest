@@ -1,0 +1,5 @@
+content   roll20api                content/
+skin      roll20api  classic/1.0   skin/
+locale    roll20api  en-US         locale/en-US/
+
+overlay chrome://browser/content/browser.xul  chrome://roll20api/content/browserOverlay.xul
